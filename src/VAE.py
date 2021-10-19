@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 """
 Auto-Encoding Variational Bayes ~ Kingma and Welling, ICLR, 2014
 [https://arxiv.org/abs/1312.6114]
