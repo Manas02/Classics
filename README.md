@@ -1,4 +1,4 @@
-# Classics
+# DL Classics
 
 ## Implementation of some of the famous DL papers.
 
