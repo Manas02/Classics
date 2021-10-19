@@ -1,3 +1,11 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+Generative Adversarial Network [https://arxiv.org/pdf/1406.2661.pdf]
+"""
+
+
 import numpy as np
 from torch import nn
 
