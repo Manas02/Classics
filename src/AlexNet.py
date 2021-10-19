@@ -9,17 +9,6 @@ AlexNet Paper implementation in PyTorch for ImageNet Dataset.
 
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
-from utils import get_data
-from tqdm import trange
-
-
-# Hyperparameter
-SEED      = 0
-LR        = 1e-3
-EPOCH     = 100
-STEP_SIZE = 50
-GAMMA     = 0.1
 
 
 # AlexNet Model
@@ -62,77 +51,4 @@ class AlexNet(nn.Module):
             x = self.classifier(x)
             return x
 
-
-# Train-Test Functions
-def train(model, device, train_loader, optimizer, epoch):
-    """ Train Function
-    
-    Args:
-        model        : AlexNet class instance.
-        device       : CUDA or CPU for training.
-        train_loader : DataLoader instance for training dataset. 
-        optimizer    : Adadelta instance.
-        epoch        : Number of epochs for training.
-    """
-    model.train()
-    for batch_idx, (data, target) in enumerate(train_loader):
-        data, target = data.to(device), target.to(device)
-        optimizer.zero_grad()
-        output = model(data)
-        loss = F.nll_loss(output, target)
-        loss.backward()
-        optimizer.step()
-        print(f'Train Epoch: {epoch} [{batch_idx * len(data):>4d}/{len(train_loader.dataset)}] | Loss: {loss.item():.4f}')
-
-
-def test(model, device, test_loader):
-    """ Test Function
-    
-    Args:
-        model        : AlexNet class instance.
-        device       : CUDA or CPU for testing. 
-        test_loader  : DataLoader instance for test dataset. 
-    """ 
-    model.eval()
-    test_loss = 0
-    correct = 0
-    with torch.no_grad():
-        for data, target in test_loader:
-            data, target = data.to(device), target.to(device)
-            output = model(data)
-            test_loss += F.nll_loss(output, target, reduction='sum').item()
-            pred = output.argmax(dim=1, keepdim=True)
-            correct += pred.eq(target.view_as(pred)).sum().item()
-
-    test_loss /= len(test_loader.dataset)
-
-    print(f'\nTest set: Average loss: {test_loss:.4f} | Accuracy: {correct}/{len(test_loader.dataset)}')
-
-
-def main():
-    torch.manual_seed(SEED)
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
-    transform = transforms.Compose([
-        transforms.ToTensor(),
-        transforms.Normalize(mean = [0.485, 0.456, 0.406],
-                             std  = [0.229, 0.224, 0.225])
-        ])
-    
-    train_loader = torch.utils.data.DataLoader(get_data('train'), transform=transform)
-    test_loader  = torch.utils.data.DataLoader(get_data('test'),  transform=transform)
-
-    model = AlexNet().to(device)
-    optimizer = torch.optim.Adadelta(model.parameters(), lr = LR)
-    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size = STEP_SIZE, gamma = GAMMA)
-    
-    for epoch in trange(1, EPOCH + 1):
-        train(model, device, train_loader, optimizer, epoch)
-        test(model, device, test_loader)
-        scheduler.step()
-
-    torch.save(model.state_dict(), "AlexNet.pt")
-
-
-if __name__ == '__main__':
-    main()
+model = AlexNet()
