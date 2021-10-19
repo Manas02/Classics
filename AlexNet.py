@@ -110,9 +110,8 @@ def test(model, device, test_loader):
 
 
 def main():
-    use_cuda = not args.no_cuda and torch.cuda.is_available()
     torch.manual_seed(SEED)
-    device = torch.device("cuda" if use_cuda else "cpu")
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     transform = transforms.Compose([
         transforms.ToTensor(),
