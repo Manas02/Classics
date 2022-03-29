@@ -6,7 +6,6 @@ Deep Residual Learning for Image Recognition [https://arxiv.org/pdf/1512.03385.p
 """
 
 import torch
-from torch._C import ThroughputBenchmark
 import torch.nn as nn
 from torch import Tensor
 
